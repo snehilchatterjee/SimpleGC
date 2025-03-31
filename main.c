@@ -49,16 +49,36 @@ int main() {
         printf("Failed to allocate Vector3 Object\n");
     }
 
-    // Test array object
-    size_t array_size = 3;
-    moose_object_t *array_obj = new_moose_array(array_size);
-    if (array_obj) {
-        printf("Array Object: Initialized with size %zu\n", array_obj->data.v_array.size);
-        free(array_obj->data.v_array.elements);
-        free(array_obj);
-    } else {
-        printf("Failed to allocate Array Object\n");
+   // Test array object
+   size_t array_size = 3;
+   moose_object_t *array_obj = new_moose_array(array_size);
+   if (array_obj) {
+       printf("Array Object: Initialized with size %zu\n", array_obj->data.v_array.size);
+       
+       // Test array set and get
+       moose_array_set(array_obj, 0, new_moose_integer(100));
+       moose_array_set(array_obj, 1, new_moose_float(200.5));
+       moose_array_set(array_obj, 2, new_moose_string("ArrayTest"));
+       
+       printf("Array Element 0: %d\n", moose_array_get(array_obj, 0)->data.v_int);
+       printf("Array Element 1: %f\n", moose_array_get(array_obj, 1)->data.v_float);
+       printf("Array Element 2: %s\n", moose_array_get(array_obj, 2)->data.v_string);
+   } else {
+       printf("Failed to allocate Array Object\n");
+   }
+
+   // Test length function
+   printf("Length of Integer Object: %d\n", moose_length(int_obj));
+   printf("Length of Float Object: %d\n", moose_length(float_obj));
+   printf("Length of String Object: %d\n", moose_length(string_obj));
+   printf("Length of Vector3 Object: %d\n", moose_length(vector_obj));
+   printf("Length of Array Object: %d\n", moose_length(array_obj));
+
+   for (size_t i = 0; i < array_size; i++) {
+    free(array_obj->data.v_array.elements[i]);
     }
+    free(array_obj->data.v_array.elements);
+    free(array_obj);
 
     return 0;
 }

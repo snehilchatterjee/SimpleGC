@@ -79,3 +79,12 @@ moose_object_t *moose_array_get(moose_object_t *array,size_t index){
     if(array==NULL || array->kind!=ARRAY || array->data.v_array.size<=index) return NULL;
     return array->data.v_array.elements[index];
 }
+
+int moose_length(moose_object_t *obj){
+    if(obj==NULL) return -1;
+    else if(obj->kind==INTEGER || obj->kind==FLOAT) return 1;
+    else if(obj->kind==STRING) return strlen(obj->data.v_string);
+    else if(obj->kind==VECTOR3) return 3;
+    else if(obj->kind==ARRAY) return obj->data.v_array.size;
+    return -1;
+}
