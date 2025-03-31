@@ -136,3 +136,17 @@ moose_object_t* moose_add(moose_object_t *a,moose_object_t *b){
     }
     else return NULL;
 }
+
+moose_object_t* _new_moose_object(){
+    moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
+    if(moose_obj==NULL){
+        return NULL;
+    }
+    moose_obj->refcount++;
+    return moose_obj;
+}
+
+void refcount_inc(moose_object_t* moose_obj){
+    if(moose_obj==NULL) return;
+    moose_obj->refcount++;
+}
