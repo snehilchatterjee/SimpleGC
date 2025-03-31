@@ -1,5 +1,7 @@
-#include "mooseobject.h"
 #include<string.h>
+#include<stdlib.h>
+
+#include "mooseobject.h"
 
 moose_object_t *new_moose_integer(int value){
     moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
@@ -47,5 +49,21 @@ moose_object_t *new_moose_vector3(moose_object_t *x, moose_object_t *y, moose_ob
     moose_obj->kind=VECTOR3;
     moose_vector_t vec={x,y,z};
     moose_obj->data.v_vector3=vec;
+    return moose_obj;
+}
+
+moose_object_t *new_moose_array(size_t size){
+    moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
+    if(moose_obj==NULL){
+        return NULL;
+    }
+    moose_object_t** arr=calloc(size,sizeof(moose_object_t*));
+    if(arr==NULL){
+        free(moose_obj);
+        return NULL;
+    }
+    moose_obj->kind=ARRAY;
+    moose_array_t list={size,arr};
+    moose_obj->data.v_array=list;
     return moose_obj;
 }
