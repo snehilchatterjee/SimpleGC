@@ -3,8 +3,51 @@
 
 #include "mooseobject.h"
 
-moose_object_t *new_moose_integer(int value){
+
+moose_object_t* _new_moose_object(){
     moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
+    if(moose_obj==NULL){
+        return NULL;
+    }
+    moose_obj->refcount++;
+    return moose_obj;
+}
+
+void refcount_inc(moose_object_t* moose_obj){
+    if(moose_obj==NULL) return;
+    moose_obj->refcount++;
+}
+
+void refcount_free(moose_object_t* moose_obj){
+    // If int or float directly free
+    if(moose_obj==STRING){
+        free(moose_obj->data.v_string);
+    }
+    else if(moose_obj==VECTOR3){
+        refcount_dec(moose_obj->data.v_vector3.x);
+        refcount_dec(moose_obj->data.v_vector3.y);
+        refcount_dec(moose_obj->data.v_vector3.z);
+    }
+    else if(moose_obj==ARRAY){
+        size_t size=moose_obj->data.v_array.size;
+        for(size_t i=0;i<size;i++){
+            refcount_dec(moose_obj->data.v_array.elements[i]);
+        }
+        free(moose_obj->data.v_array.elements);
+    } 
+    free(moose_obj);
+}
+
+void refcount_dec(moose_object_t* moose_obj){
+    if(moose_obj==NULL) return;
+    moose_obj->refcount--;
+    if(moose_obj->refcount==0){
+        refcount_free(moose_obj);
+    }
+}
+
+moose_object_t *new_moose_integer(int value){
+    moose_object_t* moose_obj=_new_moose_object();
     if(moose_obj==NULL){
         return NULL;
     }
@@ -14,7 +57,7 @@ moose_object_t *new_moose_integer(int value){
 }
 
 moose_object_t *new_moose_float(float value){
-    moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
+    moose_object_t* moose_obj=_new_moose_object();
     if(moose_obj==NULL){
         return NULL;
     }
@@ -24,7 +67,7 @@ moose_object_t *new_moose_float(float value){
 }
 
 moose_object_t *new_moose_string(char* value){
-    moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
+    moose_object_t* moose_obj=_new_moose_object();
     if(moose_obj==NULL){
         return NULL;
     }
@@ -42,18 +85,21 @@ moose_object_t *new_moose_string(char* value){
 
 moose_object_t *new_moose_vector3(moose_object_t *x, moose_object_t *y, moose_object_t *z){
     if(x==NULL || y==NULL || z==NULL) return NULL;
-    moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
+    moose_object_t* moose_obj=_new_moose_object();
     if(moose_obj==NULL){
         return NULL;
     }
     moose_obj->kind=VECTOR3;
     moose_vector_t vec={x,y,z};
     moose_obj->data.v_vector3=vec;
+    refcount_inc(x);
+    refcount_inc(y);
+    refcount_inc(z);
     return moose_obj;
 }
 
 moose_object_t *new_moose_array(size_t size){
-    moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
+    moose_object_t* moose_obj=_new_moose_object();
     if(moose_obj==NULL){
         return NULL;
     }
@@ -70,6 +116,8 @@ moose_object_t *new_moose_array(size_t size){
 
 bool moose_array_set(moose_object_t *array,size_t index,moose_object_t *value){
     if(array==NULL || value==NULL || array->kind!=ARRAY || array->data.v_array.size<=index) return false;
+    refcount_inc(value);
+    if(array->data.v_array.elements[index]!=NULL) refcount_dec(array->data.v_array.elements[index]);
     array->data.v_array.elements[index]=value;
     return true;
 }
@@ -135,18 +183,4 @@ moose_object_t* moose_add(moose_object_t *a,moose_object_t *b){
         return newArr;
     }
     else return NULL;
-}
-
-moose_object_t* _new_moose_object(){
-    moose_object_t* moose_obj=malloc(sizeof(moose_object_t));
-    if(moose_obj==NULL){
-        return NULL;
-    }
-    moose_obj->refcount++;
-    return moose_obj;
-}
-
-void refcount_inc(moose_object_t* moose_obj){
-    if(moose_obj==NULL) return;
-    moose_obj->refcount++;
 }
