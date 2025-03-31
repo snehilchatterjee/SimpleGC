@@ -67,3 +67,15 @@ moose_object_t *new_moose_array(size_t size){
     moose_obj->data.v_array=list;
     return moose_obj;
 }
+
+bool moose_array_set(moose_object_t *array,size_t index,moose_object_t *value){
+    if(array==NULL || value==NULL || array->kind!=ARRAY || array->data.v_array.size<=index) return false;
+    array->data.v_array.elements[index]=value;
+    return true;
+}
+
+
+moose_object_t *moose_array_get(moose_object_t *array,size_t index){
+    if(array==NULL || array->kind!=ARRAY || array->data.v_array.size<=index) return NULL;
+    return array->data.v_array.elements[index];
+}
