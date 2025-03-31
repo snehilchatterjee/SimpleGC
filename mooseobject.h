@@ -45,3 +45,4 @@ moose_object_t *new_moose_array(size_t size);
 bool moose_array_set(moose_object_t *array,size_t index,moose_object_t *value);
 moose_object_t *moose_array_get(moose_object_t *array,size_t index);
 int moose_length(moose_object_t *obj);
+moose_object_t* moose_add(moose_object_t *a,moose_object_t *b);
