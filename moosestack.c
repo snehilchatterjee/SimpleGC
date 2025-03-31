@@ -18,8 +18,10 @@ stack_t *stack_new(size_t capacity){
 
 void stack_push(stack_t* stk,void* obj){
     if(stk->count==stk->capacity){
-        void* new_stk_data=realloc(stk->data,sizeof(void*)*(stk->capacity*2));
-        if(new_stk_data==NULL) return;
+        void** new_stk_data=realloc(stk->data,sizeof(void*)*(stk->capacity*2));
+        if(new_stk_data==NULL){
+            exit(1);
+        }
         else{
             stk->data=new_stk_data;
             stk->capacity*=2;
@@ -27,4 +29,20 @@ void stack_push(stack_t* stk,void* obj){
     }
     stk->data[stk->count]=obj;
     stk->count++;
+}
+
+void* stack_pop(stack_t* stk){
+    if(stk->count==0){
+        return NULL;
+    }
+    stk->count--;
+    return stk->data[stk->count];
+}
+
+void stack_free(stack_t* stk){
+    if(stk==NULL) return;
+    if(stk->data!=NULL){
+        free(stk->data);
+    }
+    free(stk);
 }

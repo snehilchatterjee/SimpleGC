@@ -8,3 +8,5 @@ typedef struct Stack{
 
 stack_t *stack_new(size_t capacity);
 void stack_push(stack_t* stk,void* obj);
+void* stack_pop(stack_t* stk);
+void stack_free(stack_t* stk);
