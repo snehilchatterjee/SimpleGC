@@ -1,4 +1,9 @@
 #include "vm.h"
+#include "mooseobject.h"
+
+void vm_track_object(vm_t *vm,moose_object_t *obj){
+    stack_push(vm->objects,obj);
+}
 
 void vm_frame_push(vm_t *vm,frame_t *frame){
     if(vm==NULL || frame==NULL){
