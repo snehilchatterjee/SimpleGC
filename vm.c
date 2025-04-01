@@ -2,6 +2,9 @@
 #include "mooseobject.h"
 
 void vm_track_object(vm_t *vm,moose_object_t *obj){
+    if(vm==NULL || obj==NULL){
+        return;
+    }
     stack_push(vm->objects,obj);
 }
 
@@ -42,3 +45,11 @@ void vm_free(vm_t *vm){
     stack_free(vm->frames);
     free(vm);
 }
+
+void frame_reference_object(frame_t *frame, moose_object_t *obj) {
+    if(frame==NULL || obj==NULL){
+        return;
+    }
+    stack_push(frame->references,obj);
+}
+  
