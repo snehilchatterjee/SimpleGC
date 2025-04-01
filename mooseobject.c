@@ -8,21 +8,12 @@ void refcount_inc(moose_object_t* moose_obj){
     moose_obj->refcount++;
 }
 
-void refcount_free(moose_object_t* moose_obj){
+void moose_object_free(moose_object_t* moose_obj){
     // If int or float directly free
     if(moose_obj->kind==STRING){
         free(moose_obj->data.v_string);
     }
-    else if(moose_obj->kind==VECTOR3){
-        refcount_dec(moose_obj->data.v_vector3.x);
-        refcount_dec(moose_obj->data.v_vector3.y);
-        refcount_dec(moose_obj->data.v_vector3.z);
-    }
     else if(moose_obj->kind==ARRAY){
-        size_t size=moose_obj->data.v_array.size;
-        for(size_t i=0;i<size;i++){
-            refcount_dec(moose_obj->data.v_array.elements[i]);
-        }
         free(moose_obj->data.v_array.elements);
     } 
     free(moose_obj);

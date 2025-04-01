@@ -32,6 +32,13 @@ vm_t *vm_new(){
 
 void vm_free(vm_t *vm){
     if(vm==NULL) return;
+    size_t size=vm->frames->count;
+    for(size_t i=0;i<size;i++){
+        frame_free(vm->frames->data[i]);
+    }
+    for(size_t i=0;i<size;i++){
+        moose_object_free(vm->objects->data[i]);
+    }
     stack_free(vm->frames);
     free(vm);
 }
