@@ -18,5 +18,6 @@ frame_t *vm_new_frame(vm_t *vm);
 
 void frame_free(frame_t *frame);
 void frame_reference_object(frame_t *frame, moose_object_t *obj);
+void vm_track_object(vm_t *vm, moose_object_t *obj);
 
 void mark(vm_t* vm);
