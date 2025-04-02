@@ -1,4 +1,6 @@
+#pragma once
 #include "moosestack.h"
+#include "mooseobject.h"
 
 typedef struct VirtualMachine
 {

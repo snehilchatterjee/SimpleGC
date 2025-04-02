@@ -5,7 +5,7 @@
 
 void refcount_inc(moose_object_t* moose_obj){
     if(moose_obj==NULL) return;
-    moose_obj->refcount++;
+    // moose_obj->refcount++;
 }
 
 void moose_object_free(moose_object_t* moose_obj){
@@ -21,17 +21,17 @@ void moose_object_free(moose_object_t* moose_obj){
 
 void refcount_dec(moose_object_t* moose_obj){
     if(moose_obj==NULL) return;
-    moose_obj->refcount--;
-    if(moose_obj->refcount==0){
-        refcount_free(moose_obj);
-    }
+    // moose_obj->refcount--;
+    // if(moose_obj->refcount==0){
+        // refcount_free(moose_obj);
+    // }
 }
 
 
 bool moose_array_set(moose_object_t *array,size_t index,moose_object_t *value){
     if(array==NULL || value==NULL || array->kind!=ARRAY || array->data.v_array.size<=index) return false;
-    refcount_inc(value);
-    if(array->data.v_array.elements[index]!=NULL) refcount_dec(array->data.v_array.elements[index]);
+    // refcount_inc(value);
+    // if(array->data.v_array.elements[index]!=NULL) refcount_dec(array->data.v_array.elements[index]);
     array->data.v_array.elements[index]=value;
     return true;
 }

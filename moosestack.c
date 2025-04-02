@@ -1,4 +1,6 @@
 #include<stddef.h>
+#include <stdlib.h>
+
 #include "moosestack.h"
 
 stack_t *stack_new(size_t capacity){

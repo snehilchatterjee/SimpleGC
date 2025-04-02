@@ -1,5 +1,6 @@
+#include <stdlib.h>
+
 #include "vm.h"
-#include "mooseobject.h"
 
 vm_t *vm_new(){
     vm_t *vm=malloc(sizeof(vm_t));
@@ -70,4 +71,8 @@ void mark(vm_t* vm){
             obj->is_marked=true;
         }
     }
+}
+
+int main() {
+    return 0;
 }
