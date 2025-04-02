@@ -53,3 +53,15 @@ void frame_reference_object(frame_t *frame, moose_object_t *obj) {
     stack_push(frame->references,obj);
 }
   
+
+void mark(vm_t* vm){
+    size_t totalFrames=vm->frames->count;
+    for(size_t i=0;i<totalFrames;i++){
+        frame_t *frame=vm->frames->data[i];
+        size_t totalReferences=frame->references->count;
+        for(size_t j=0;j<totalReferences;j++){
+            moose_object_t* obj=frame->references->data[j];
+            obj->is_marked=true;
+        }
+    }
+}

@@ -11,6 +11,7 @@ moose_object_t* _new_moose_object(vm_t* vm){
         return NULL;
     }
     vm_track_object(vm,moose_obj);
+    moose_obj->is_marked=false;
     return moose_obj;
 }
 

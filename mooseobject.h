@@ -33,7 +33,7 @@ typedef union moose_object_data_t{
 } moose_object_data_t;
 
 typedef struct moose_object_t{
-    size_t refcount;
+    bool is_marked;
     moose_object_kind_t kind;
     moose_object_data_t data;
 } moose_object_t;
