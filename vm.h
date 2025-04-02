@@ -23,3 +23,8 @@ void frame_reference_object(frame_t *frame, moose_object_t *obj);
 void vm_track_object(vm_t *vm, moose_object_t *obj);
 
 void mark(vm_t* vm);
+void trace(vm_t* vm);
+void sweep(vm_t* vm);
+
+void trace_backlen_object(stack_t *gray_objects, moose_object_t* ref);
+void trace_mark_object(stack_t *gray_objects, moose_object_t* ref);

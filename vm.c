@@ -36,8 +36,6 @@ frame_t *vm_new_frame(vm_t *vm){
     return frame;
 }
 
-
-
 void frame_free(frame_t *frame){
     stack_free(frame->references);
     free(frame);
@@ -59,8 +57,6 @@ void vm_track_object(vm_t *vm,moose_object_t *obj){
 }
 
 
-  
-
 void mark(vm_t* vm){
     size_t totalFrames=vm->frames->count;
     for(size_t i=0;i<totalFrames;i++){
@@ -71,6 +67,44 @@ void mark(vm_t* vm){
             obj->is_marked=true;
         }
     }
+}
+
+void trace(vm_t* vm){
+    stack_t* gray_objects=stack_new(8);
+    if(gray_objects==NULL) return;
+    size_t countObj=vm->objects->count;
+    for(size_t i=0;i<countObj;i++){
+        moose_object_t* obj=vm->objects->data[i];
+        if(obj->is_marked){
+            stack_push(gray_objects,obj);
+        }
+    }
+    while(gray_objects->count){
+        moose_object_t* obj=stack_pop(gray_objects);
+        trace_backlen_object(gray_objects,obj);
+    }
+    free(gray_objects);
+}
+
+void trace_mark_object(stack_t *gray_objects, moose_object_t* ref){
+    if(ref==NULL) return;
+    stack_push(gray_objects,ref);
+}
+
+void trace_backlen_object(stack_t *gray_objects, moose_object_t* ref){
+    if(ref->kind==INTEGER || ref->kind==STRING || ref->kind==FLOAT) return;
+    else if(ref->kind==VECTOR3){
+        trace_mark_object(gray_objects,ref->data.v_vector3.x);
+        trace_mark_object(gray_objects,ref->data.v_vector3.y);
+        trace_mark_object(gray_objects,ref->data.v_vector3.z);
+    }
+    else if(ref->kind==ARRAY){
+        size_t size=ref->data.v_array.size;
+        for(size_t i=0;i<size;i++){
+            trace_mark_object(gray_objects,ref->data.v_array.elements[i]);
+        }
+    }
+    else return;
 }
 
 int main() {
