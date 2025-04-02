@@ -48,3 +48,14 @@ void stack_free(stack_t* stk){
     }
     free(stk);
 }
+
+
+void stack_remove_nulls(stack_t *stack) {
+    size_t new_count = 0;
+    for (size_t i = 0; i < stack->count; i++) {
+      if (stack->data[i] != NULL) {
+        stack->data[new_count++] = stack->data[i];
+      }
+    }
+}
+  

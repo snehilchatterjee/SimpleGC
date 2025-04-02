@@ -86,6 +86,28 @@ void trace(vm_t* vm){
     free(gray_objects);
 }
 
+void sweep(vm_t* vm){
+    size_t countObj=vm->objects->count;
+    for(size_t i=0;i<countObj;i++){
+        moose_object_t* obj=vm->objects->data[i];
+        if(obj->is_marked){
+            obj->is_marked=false;
+            continue;
+        }
+        else{
+            moose_object_free(obj);
+            vm->objects->data[i]=NULL;
+        }
+    }
+    stack_remove_nulls(vm->objects);
+}
+
+void vm_collect_garbage(vm_t *vm){
+    mark(vm);
+    trace(vm);
+    sweep(vm);
+}
+
 void trace_mark_object(stack_t *gray_objects, moose_object_t* ref){
     if(ref==NULL) return;
     stack_push(gray_objects,ref);

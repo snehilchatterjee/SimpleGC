@@ -26,5 +26,7 @@ void mark(vm_t* vm);
 void trace(vm_t* vm);
 void sweep(vm_t* vm);
 
+void vm_collect_garbage(vm_t *vm);
+
 void trace_backlen_object(stack_t *gray_objects, moose_object_t* ref);
 void trace_mark_object(stack_t *gray_objects, moose_object_t* ref);
