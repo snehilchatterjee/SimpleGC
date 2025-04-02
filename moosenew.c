@@ -10,8 +10,8 @@ moose_object_t* _new_moose_object(vm_t* vm){
     if(moose_obj==NULL){
         return NULL;
     }
-    vm_track_object(vm,moose_obj);
     moose_obj->is_marked=false;
+    vm_track_object(vm,moose_obj);
     return moose_obj;
 }
 
@@ -61,9 +61,6 @@ moose_object_t *new_moose_vector3(vm_t* vm,moose_object_t *x, moose_object_t *y,
     moose_obj->kind=VECTOR3;
     moose_vector_t vec={x,y,z};
     moose_obj->data.v_vector3=vec;
-    refcount_inc(x);
-    refcount_inc(y);
-    refcount_inc(z);
     return moose_obj;
 }
 
