@@ -2,6 +2,7 @@
 #include<stdlib.h>
 
 #include "mooseobject.h"
+#include "moosenew.h"
 
 void refcount_inc(moose_object_t* moose_obj){
     if(moose_obj==NULL) return;
@@ -51,16 +52,16 @@ int moose_length(moose_object_t *obj){
     return -1;
 }
 
-moose_object_t* moose_add(moose_object_t *a,moose_object_t *b){
+moose_object_t* moose_add(vm_t* vm,moose_object_t *a,moose_object_t *b){
     if(a==NULL || b==NULL) return NULL;
     else if(a->kind==INTEGER){
-        if(b->kind==INTEGER) return new_moose_integer(a->data.v_int+b->data.v_int);
-        else if(b->kind==FLOAT) return new_moose_float(a->data.v_int+b->data.v_float);
+        if(b->kind==INTEGER) return new_moose_integer(vm,a->data.v_int+b->data.v_int);
+        else if(b->kind==FLOAT) return new_moose_float(vm,a->data.v_int+b->data.v_float);
         else return NULL;
     }
     else if(a->kind==FLOAT){
-        if(b->kind==INTEGER) return new_moose_float(a->data.v_float+b->data.v_int);
-        else if(b->kind==FLOAT) return new_moose_float(a->data.v_float+b->data.v_float);
+        if(b->kind==INTEGER) return new_moose_float(vm,a->data.v_float+b->data.v_int);
+        else if(b->kind==FLOAT) return new_moose_float(vm,a->data.v_float+b->data.v_float);
         else return NULL;
     }
     else if(a->kind==STRING){
@@ -69,16 +70,16 @@ moose_object_t* moose_add(moose_object_t *a,moose_object_t *b){
         char* newStr=calloc(len,sizeof(char));
         strcpy(newStr,a->data.v_string);
         strcat(newStr,b->data.v_string);
-        moose_object_t* new_str_obj=new_moose_string(newStr);
+        moose_object_t* new_str_obj=new_moose_string(vm,newStr);
         free(newStr);
         return new_str_obj;
     }
     else if(a->kind==VECTOR3){
         if(b->kind!=VECTOR3) return NULL;
-        moose_object_t *newX=moose_add(a->data.v_vector3.x,b->data.v_vector3.x);
-        moose_object_t *newY=moose_add(a->data.v_vector3.y,b->data.v_vector3.y);
-        moose_object_t *newZ=moose_add(a->data.v_vector3.z,b->data.v_vector3.z);
-        moose_object_t *newVec=new_moose_vector3(newX,newY,newZ);
+        moose_object_t *newX=moose_add(vm,a->data.v_vector3.x,b->data.v_vector3.x);
+        moose_object_t *newY=moose_add(vm,a->data.v_vector3.y,b->data.v_vector3.y);
+        moose_object_t *newZ=moose_add(vm,a->data.v_vector3.z,b->data.v_vector3.z);
+        moose_object_t *newVec=new_moose_vector3(vm,newX,newY,newZ);
         return newVec;
     }
     else if(a->kind==ARRAY){
@@ -86,7 +87,7 @@ moose_object_t* moose_add(moose_object_t *a,moose_object_t *b){
         size_t a_size=a->data.v_array.size;
         size_t b_size=b->data.v_array.size;
         
-        moose_object_t *newArr=new_moose_array(a_size+b_size);
+        moose_object_t *newArr=new_moose_array(vm,a_size+b_size);
         
         for(size_t i=0;i<a_size;i++){
             moose_array_set(newArr,i,moose_array_get(a,i));

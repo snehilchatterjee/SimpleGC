@@ -2,7 +2,7 @@
 #include "mooseobject.h"
 #include "vm.h"
 
-moose_object_t* _new_moose_object(vm_t* vm);
+moose_object_t *_new_moose_object(vm_t* vm);
 moose_object_t *new_moose_integer(vm_t* vm,int value);
 moose_object_t *new_moose_float(vm_t* vm,float value);
 moose_object_t *new_moose_string(vm_t* vm,char* value);

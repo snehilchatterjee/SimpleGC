@@ -2,6 +2,7 @@
 #include<stddef.h>
 #include<stdbool.h>
 
+typedef struct VirtualMachine vm_t;  
 typedef struct moose_object_t moose_object_t;
 
 
@@ -42,7 +43,7 @@ typedef struct moose_object_t{
 bool moose_array_set(moose_object_t *array,size_t index,moose_object_t *value);
 moose_object_t *moose_array_get(moose_object_t *array,size_t index);
 int moose_length(moose_object_t *obj);
-moose_object_t* moose_add(moose_object_t *a,moose_object_t *b);
+moose_object_t* moose_add(vm_t *vm,moose_object_t *a,moose_object_t *b);
 void moose_object_free(moose_object_t *obj);
 void refcount_dec(moose_object_t* moose_obj);
 void refcount_inc(moose_object_t* moose_obj);
